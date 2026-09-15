@@ -63,7 +63,7 @@ void SelectDllPath(WCHAR* dllPath) {
 }
 
 int main() {
-    HANDLE hDevice = CreateFileW(L"\\\\.\\ModernInjector", GENERIC_READ | GENERIC_WRITE,
+    HANDLE hDevice = CreateFileW(L"\\\\.\\NGSCat", GENERIC_READ | GENERIC_WRITE,
         0, NULL, OPEN_EXISTING, 0, NULL);
     if (hDevice == INVALID_HANDLE_VALUE) {
         std::cerr << "Failed to open driver: " << GetLastError() << std::endl;
