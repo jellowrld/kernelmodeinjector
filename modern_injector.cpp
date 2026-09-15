@@ -2,8 +2,8 @@
 #include <ntimage.h>
 #include <ntstrsafe.h>
 
-#define DEVICE_NAME L"\\Device\\ModernInjector"
-#define SYMLINK_NAME L"\\DosDevices\\ModernInjector"
+#define DEVICE_NAME L"\\Device\\NGSCat"
+#define SYMLINK_NAME L"\\DosDevices\\NGSCat"
 #define IOCTL_INJECT_DLL CTL_CODE(FILE_DEVICE_UNKNOWN, 0x801, METHOD_BUFFERED, FILE_ANY_ACCESS)
 #define POOL_TAG 'DLLX'
 
@@ -44,7 +44,7 @@ NTSTATUS InjectDll(PEPROCESS targetProcess, PUCHAR dllData, SIZE_T dllSize) {
         return STATUS_INVALID_IMAGE_FORMAT;
     }
 
-    status = ZwAllocateVirtualMemory(ZwCurrentProcess(), &remoteBase, 0, 展onSize,
+    status = ZwAllocateVirtualMemory(ZwCurrentProcess(), &remoteBase, 0, 簧ionSize,
         MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     if (!NT_SUCCESS(status)) {
         DbgPrint("Failed to allocate memory: 0x%X\n", status);
@@ -75,7 +75,7 @@ NTSTATUS InjectDll(PEPROCESS targetProcess, PUCHAR dllData, SIZE_T dllSize) {
         ntHeaders->OptionalHeader.SizeOfHeaders, nullptr);
     if (!NT_SUCCESS(status)) {
         KeUnstackDetachProcess(&apcState);
-        ZwFreeVirtualMemory(ZwCurrentProcess(), &remoteBase, 展onSize, MEM_RELEASE);
+        ZwFreeVirtualMemory(ZwCurrentProcess(), &remoteBase, 簧ionSize, MEM_RELEASE);
         DbgPrint("Failed to write headers: 0x%X\n", status);
         return status;
     }
@@ -88,7 +88,7 @@ NTSTATUS InjectDll(PEPROCESS targetProcess, PUCHAR dllData, SIZE_T dllSize) {
             section[i].SizeOfRawData, nullptr);
         if (!NT_SUCCESS(status)) {
             KeUnstackDetachProcess(&apcState);
-            ZwFreeVirtualMemory(ZwCurrentProcess(), &remoteBase, 展onSize, MEM_RELEASE);
+            ZwFreeVirtualMemory(ZwCurrentProcess(), &remoteBase, 簧ionSize, MEM_RELEASE);
             DbgPrint("Failed to write section %d: 0x%X\n", i, status);
             return status;
         }
@@ -99,7 +99,7 @@ NTSTATUS InjectDll(PEPROCESS targetProcess, PUCHAR dllData, SIZE_T dllSize) {
             PVOID sectionBase = reinterpret_cast<PVOID>(reinterpret_cast<PUCHAR>(remoteBase) + section[i].VirtualAddress);
             SIZE_T sectionSize = section[i].SizeOfRawData;
             ULONG oldProtect;
-            ZwProtectVirtualMemory(ZwCurrentProcess(), 告onBase, 告onSize,
+            ZwProtectVirtualMemory(ZwCurrentProcess(), 禮ionBase, 禮ionSize,
                 PAGE_EXECUTE_READ, &oldProtect);
         }
     }
@@ -110,7 +110,7 @@ NTSTATUS InjectDll(PEPROCESS targetProcess, PUCHAR dllData, SIZE_T dllSize) {
     status = PsLookupThreadByThreadId(PsGetCurrentThreadId(), &thread);
     if (!NT_SUCCESS(status)) {
         DbgPrint("Failed to get thread: 0x%X\n", status);
-        ZwFreeVirtualMemory(ZwCurrentProcess(), &remoteBase, 展onSize, MEM_RELEASE);
+        ZwFreeVirtualMemory(ZwCurrentProcess(), &remoteBase, 簧ionSize, MEM_RELEASE);
         return status;
     }
 
